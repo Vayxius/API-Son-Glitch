@@ -49,6 +49,7 @@ app.use(cors()); //Call Cors
     // })
 app.use(bodyParser.json()); //Call body-parser type JSON
 app.use('/images', express.static(path.join(__dirname, 'images'))); //Access for folder images
+app.use('/css', express.static(path.join(__dirname, 'css'))); //Access for folder css
 app.use(multer({storage: fileStorage, fileFilter: fileFilter}).single('image'));
 
 //ROUTES
