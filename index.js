@@ -9,7 +9,7 @@ const path = require('path');
 //Import Routes From folder src/routes
 const homeRoutes = require('./src/routes/home');
 // const authRoutes = require('./src/routes/auth');
-// const blogRoutes = require('./src/routes/blog');
+const blogRoutes = require('./src/routes/blog');
 
 //CREATE Variables
 const app = express();
@@ -53,9 +53,9 @@ app.use('/css', express.static(path.join(__dirname, 'css'))); //Access for folde
 app.use(multer({storage: fileStorage, fileFilter: fileFilter}).single('image'));
 
 //ROUTES
+app.use('/v1/blog', blogRoutes);
 app.use('/', homeRoutes);
 // app.use('/v1/auth', authRoutes);
-// app.use('/v1/blog', blogRoutes);
 
 //ERROR HANDLER
 app.use((error, req, res, next) => {
@@ -75,15 +75,17 @@ app.use((error, req, res, next) => {
 // });
 
 //START THE SERVER & CONNECT TO MONGODB
-// mongoose.connect('mongodb+srv://vayxius:kAFMj6UXg937TDZH@cluster0.nqzse.mongodb.net/blog?retryWrites=true&w=majority')
-// .then(() => {
-//     app.listen(port, () => {
-//         console.log(`Server started on port ${port}`)
-//         console.log('Press Ctrl+C to quit.');
-//     });
-// })
-// .catch(err=>console.log(err));
-app.listen(port, () => {
-    console.log(`Server started on port ${port}`)
-    console.log('Press Ctrl+C to quit.');
-});
+mongoose.connect(
+    process.env.MONGODB_URI || 'mongodb+srv://vayxius:kAFMj6UXg937TDZH@cluster0.nqzse.mongodb.net/blog?retryWrites=true&w=majority',
+    {
+        useNewUrlParser: true,
+        useUnifiedTopology: true
+    }
+)
+.then(() => {
+    app.listen(port, () => {
+        console.log(`Server started on port ${port}`)
+        console.log('Press Ctrl+C to quit.');
+    });
+})
+.catch(err => console.log(err));
