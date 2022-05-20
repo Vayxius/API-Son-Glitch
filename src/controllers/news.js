@@ -1,9 +1,9 @@
 const {validationResult} = require('express-validator');
-const BlogPost = require('../models/blog');
+const NewsPost = require('../models/news');
 const path = require('path');
 const fs = require('fs');
 
-exports.createBlogPost = (req, res, next) => {
+exports.createNewsPost = (req, res, next) => {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
@@ -23,17 +23,17 @@ exports.createBlogPost = (req, res, next) => {
     const image = req.file.path.replace(/\\/g, "/");
     const body = req.body.body;
 
-    const Posting = new BlogPost({
+    const Posting = new NewsPost({
         title: title,
         image: image,
         body: body,
-        author: {uid:1,name: 'Ivan Yapputra'}
+        author: {uid:1,name: 'Vayxius'}
     });
 
     Posting.save()
     .then(result => {
         res.status(201).json({
-            message: 'Create Blog Post Success',
+            message: 'Create News Success',
             data: result
         });
     })
@@ -42,22 +42,22 @@ exports.createBlogPost = (req, res, next) => {
     });
 }
 
-exports.getAllBlogPost = (req, res, next) => {
+exports.getAllNewsPost = (req, res, next) => {
     const currentPage = req.query.page || 1;
     const perPage = req.query.perPage || 5;
     let totalItems;
 
-    BlogPost.find()
+    NewsPost.find()
     .countDocuments()
     .then(count => {
         totalItems = count;
-        return BlogPost.find()
+        return NewsPost.find()
         .skip((parseInt(currentPage) - 1) * parseInt(perPage))
         .limit(parseInt(perPage));
     })
     .then(result => {
         res.status(200).json({
-            message: 'Data Blog Post Berhasil Dipanggil',
+            message: 'Data News Berhasil Dipanggil',
             data: result,
             total_Data: totalItems,
             per_Page: parseInt(perPage),
@@ -69,17 +69,17 @@ exports.getAllBlogPost = (req, res, next) => {
     });
 }
 
-exports.getBlogPostById = (req, res, next) => {
+exports.getNewsPostById = (req, res, next) => {
     const postId = req.params.postId;
-    BlogPost.findById(postId)
+    NewsPost.findById(postId)
     .then(result => {
         if(!result){
-            const error = new Error('Blog Post Tidak Ditemukan');
+            const error = new Error('Data News Tidak Ditemukan');
             error.errorStatus = 404;
             throw error;
         }
         res.status(200).json({
-            message: 'Data Blog Post Berhasil Dipanggil',
+            message: 'News Berhasil Dipanggil',
             data: result
         });
     })
@@ -88,7 +88,7 @@ exports.getBlogPostById = (req, res, next) => {
     });
 }
 
-exports.updateBlogPost = (req, res, next) => {
+exports.updateNewsPost = (req, res, next) => {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
@@ -109,10 +109,10 @@ exports.updateBlogPost = (req, res, next) => {
     const body = req.body.body;
     const postId = req.params.postId;
 
-    BlogPost.findById(postId)
+    NewsPost.findById(postId)
     .then(post => {
         if(!post){
-            const err = new Error('Blog Post Tidak Ditemukan');
+            const err = new Error('Data News Tidak Ditemukan');
             err.errorStatus = 404;
             throw err;
         }
@@ -134,23 +134,23 @@ exports.updateBlogPost = (req, res, next) => {
     });
 }
 
-exports.deleteBlogPost = (req, res, next) => {
+exports.deleteNewsPost = (req, res, next) => {
     const postId = req.params.postId;
 
-    BlogPost.findById(postId)
+    NewsPost.findById(postId)
     .then(post => {
         if(!post){
-            const err = new Error('Blog Post Tidak Ditemukan');
+            const err = new Error('Data News Tidak Ditemukan');
             err.errorStatus = 404;
             throw err;
         }
 
         removeImage(post.image);
-        return BlogPost.findByIdAndRemove(postId);
+        return NewsPost.findByIdAndRemove(postId);
     })
     .then(result => {
         res.status(200).json({
-            messagee: 'Hapus Blog Post Berhasil',
+            messagee: 'Hapus News Berhasil',
             data: result
         });
     })

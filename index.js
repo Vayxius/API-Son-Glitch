@@ -9,7 +9,7 @@ const path = require('path');
 //Import Routes From folder src/routes
 const homeRoutes = require('./src/routes/home');
 // const authRoutes = require('./src/routes/auth');
-const blogRoutes = require('./src/routes/blog');
+const newsRoutes = require('./src/routes/news');
 
 //CREATE Variables
 const app = express();
@@ -53,7 +53,7 @@ app.use('/css', express.static(path.join(__dirname, 'css'))); //Access for folde
 app.use(multer({storage: fileStorage, fileFilter: fileFilter}).single('image'));
 
 //ROUTES
-app.use('/v1/blog', blogRoutes);
+app.use('/v1/news', newsRoutes);
 app.use('/', homeRoutes);
 // app.use('/v1/auth', authRoutes);
 
